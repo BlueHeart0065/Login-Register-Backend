@@ -1,3 +1,46 @@
-body{
-    background-color: tomato;
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap');
+
+.topBar{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    height: fit-content;
+    border-bottom: 2px solid rgb(177, 177, 177);
+    font-family: 'Hind';
 }
+
+.topBar p{
+    font-size: 1.5vw;
+    font-weight: 700;
+    margin-left: 15vw;
+}
+
+button{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 1vw;
+    
+}
+
+.login{
+    margin: 1vw 3vw 1vw 50vw;
+    background-color: rgb(62, 110, 255);
+    border-radius: 10px;
+    width: 5vw;
+    height: 3vw;
+    color: white;
+}
+
+.signup{
+    margin: 1vw 3vw 1vw 0vw;
+    border-radius: 10px;
+    width: 5vw;
+    height: 3vw;
+    color: black;
+}
+
+.signup:hover{
+    background-color: rgb(224, 224, 224);
+}
+

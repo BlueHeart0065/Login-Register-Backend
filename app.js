@@ -3,9 +3,10 @@ const mysql = require('mysql');
 const ejs = require('ejs');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
+const path = require('path');
 
 const app = express();
-const port = 3002;
+const port = 3009;
 
 const db = mysql.createConnection({
     host : 'localhost',
@@ -25,6 +26,7 @@ db.connect( err => {
 
 app.set('view engine' , 'ejs');
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join('public')));
 
 app.get('/' , (req , res) => {
     res.render('index');

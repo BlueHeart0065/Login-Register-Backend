@@ -3,16 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../login.css">
     <title>Login</title>
 </head>
 <body>
-    <h2>Login</h2>
-    <form action="/login" method="post" style="display: flex; flex-direction : column;">
-        <label for="email">Email address</label>
-        <input type="email" name="email">
-        <label for="password">Password</label>
-        <input type="password" name="password">
-        <button>Login</button>
-    </form>
+    <a href="/">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 12H18M6 12L11 7M6 12L11 17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+    </a>
+    <div class="hero">
+        <p>Welcome to login</p>
+        <form action="/login" method="post" style="display: flex; flex-direction : column;">
+            <label for="email">Email address</label>
+            <input type="email" name="email" value = "<%= email  %>"">
+
+            <% if (errors.emailnotfound) { %>
+                <p class="error">Email not found</p>
+            <% } %>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" value="<%= password %>">
+
+            <% if (errors.invalidpassword) { %>
+                <p class="error">Invalid password</p>
+            <% } %>
+
+            <% if (errors.passwordlength) { %>
+                <p class="error">Password must be at least 8 characters long</p>
+            <% } %>
+            
+            <button>Login</button>
+        </form>
+    </div>
 </body>
 </html>

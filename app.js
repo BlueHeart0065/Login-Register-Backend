@@ -4,6 +4,8 @@ const ejs = require('ejs');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 const path = require('path');
+const session = require('express-session');
+const { error } = require('console');
 
 const app = express();
 const port = 3009;
@@ -28,90 +30,112 @@ app.set('view engine' , 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join('public')));
 
+
+app.use(session({
+    secret : 'secret-key',
+    resave: false,
+    saveUninitialized: true
+}));
+
 app.get('/' , (req , res) => {
-    res.render('index');
+    if(req.session.user){
+        res.render('index', { loggedin : true});
+    }
+    else{
+        res.render('index' , {loggedin : false});
+    }
 });
 
 app.get('/signup', (req , res) => {
-    res.render('signup');
+    res.render('signup' , {errors : {} , email : '' , password : '' , username : ''});
 });
 
 app.post('/signup' , async (req , res) => {
     const {username , email , password ,confirmPassword} = req.body;
-    if(confirmPassword == password)
-    {
+    const errors = {};
 
-        db.query('SELECT * FROM users WHERE email = ?' , [email] , async (err, results) => {
-            if(err){
-                console.log('error in checking the existing database' , err);
-                return
-            }
-            if(results.length > 0){
-                return res.send('account already exists');
-            }
-
-            const hashPassword = await bcrypt.hash(password , 10);
-    
-            db.query('INSERT INTO users (username , email , password) VALUES (? , ? , ?)' , [username , email , hashPassword] , (err , result) => {
-                if(err){
-                    console.log('Insertion of data in the database failed');
-                    res.send('Sign up failed');
-                }
-                else{
-                    console.log('Data inserted in the databse');
-                    res.redirect('/login');
-                }
-            });
-        });
-
+    if(password.length < 8){
+        errors.passwordlength = true;
     }
     else{
-        res.send("Password confirmation failed");
+
+        if(confirmPassword == password)
+        {
+    
+            db.query('SELECT * FROM users WHERE email = ?' , [email] , async (err, results) => {
+                if(err){
+                    console.log('error in checking the existing database' , err);
+                    return
+                }
+                if(results.length > 0){
+                    return res.send('account already exists');
+                }
+    
+                const hashPassword = await bcrypt.hash(password , 10);
+        
+                db.query('INSERT INTO users (username , email , password) VALUES (? , ? , ?)' , [username , email , hashPassword] , (err , result) => {
+                    if(err){
+                        console.log('Insertion of data in the database failed');
+                        res.send('Sign up failed');
+                    }
+                    else{
+                        console.log('Data inserted in the databse');
+                        res.redirect('/login');
+                    }
+                });
+            });
+    
+        }
+        else{
+            errors.passwordmatch = true;
+        }
     }
+
+    if(Object.keys(errors).length > 0){
+        return res.render('signup' , {errors , email , password , username});
+    }
+
 
 });
 
 app.get('/login' , (req ,res) => {
-    res.render('login');
+    res.render('login' , {errors : {} , email : '' , password : ''});
 })
 
 app.post('/login' , (req , res) => {
     const {email , password} = req.body;
+    const errors = {};
+    const status = {};
 
     db.query('SELECT * FROM users WHERE email = ?' , [email] , async (err , results) => {
         if(err){
             console.log('error in searching email', err);
             return;
         }
+    
         if(results.length > 0){
 
-            const users = results[0];
-            const match = await bcrypt.compare(password , users.password);
-
-            if(match){
-                res.redirect('/');
+            if(password.length < 8){
+                errors.passwordlength = true;
             }
             else{
-                res.send('invalid password');
+                const users = results[0];
+                const match = await bcrypt.compare(password , users.password);
+    
+                if(match){
+                    res.redirect('/');
+                }
+                else{
+                    errors.invalidpassword = true;
+                }
             }
-
-            // db.query('SELECT password FROM users WHERE email = ? ' , [email] , async (err , result) => {
-            //     if(err){
-            //         console.log('error in checking password' , err)
-            //         return;
-            //     }
-                
-            //     if(result == hashPassword){
-            //         res.redirect('/');
-            //     }
-            //     else{
-            //         res.send('invalid password');
-            //     }
-        
-            // });
         }
         else{
-            res.send('invalid email');
+            errors.emailnotfound = true;
+        }
+
+        if (Object.keys(errors).length > 0) {
+            return res.render('login', { errors, email , password});
         }
     });
 });

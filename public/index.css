@@ -12,7 +12,7 @@
 .topBar p{
     font-size: 1.5vw;
     font-weight: 700;
-    margin-left: 15vw;
+    margin-left: 10vw;
 }
 
 button{
@@ -24,7 +24,7 @@ button{
 }
 
 .login{
-    margin: 1vw 3vw 1vw 50vw;
+    margin: 1vw 0vw 1vw 0vw;
     background-color: rgb(62, 110, 255);
     border-radius: 10px;
     width: 5vw;
@@ -33,7 +33,7 @@ button{
 }
 
 .signup{
-    margin: 1vw 3vw 1vw 0vw;
+    margin: 1vw 0vw 1vw 0vw;
     border-radius: 10px;
     width: 5vw;
     height: 3vw;
@@ -44,3 +44,13 @@ button{
     background-color: rgb(224, 224, 224);
 }
 
+
+svg{
+    width: 2vw;
+    height: 2vw;
+}
+
+a{
+    width: fit-content;
+    height: fit-content;
+}

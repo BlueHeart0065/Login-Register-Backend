@@ -39,13 +39,12 @@ app.get('/login' , (req ,res) => {
 })
 
 app.post('/signup' , async (req , res) => {
-    const {username , email , password , confirmPassword} = req.body;
-
-    if(consfirmPassword == password)
+    const {username , email , password ,confirmPassword} = req.body;
+    if(confirmPassword == password)
     {
 
         const hashPassword = await bcrypt.hash(password , 10);
-        
+
         db.query('INSERT INTO users (username , email , password) VALUES (? , ? , ?)' , [username , email , hashPassword] , (err , result) => {
             if(err){
                 console.log('Insertion of data in the database failed');
